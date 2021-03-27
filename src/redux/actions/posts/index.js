@@ -28,7 +28,7 @@ const endpoint = 'posts';
 
 export const fetchPosts = () => async dispatch => {
     dispatch({
-        type: GET_POSTS_START
+        type: GET_POSTS_START,
     });
 
     try {
@@ -99,7 +99,7 @@ export const changePost = (item, id) => async dispatch => {
         const response = await changeItemApi(item, endpoint, id);
         dispatch({
             type: CHANGE_POST_SUCCESS,
-            payload: response
+            payload: response,
         });
     } catch (err) {
         dispatch({
@@ -115,10 +115,12 @@ export const deletePost = (id) => async dispatch => {
     });
 
     try {
-        const response = await deleteItemApi(endpoint, id);
+        await deleteItemApi(endpoint, id);
         dispatch({
             type: DELETE_POST_SUCCESS,
-            payload: response
+            payload: {
+                id: id
+            },
         });
     } catch (err) {
         dispatch({

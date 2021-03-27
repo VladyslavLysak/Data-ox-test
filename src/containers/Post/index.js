@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 
 import { makeStyles, Grid } from '@material-ui/core';
 
@@ -14,6 +14,8 @@ import CommentCard from '../../components/cards/comment';
 import MainModal from '../../components/modals';
 
 import { modalType } from '../../components/modals/type';
+
+import { routes } from '../../helpers/routesConst';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -60,6 +62,7 @@ const Post = ({
 }) => {
 
     const { id } = useParams();
+    const history = useHistory();
     const classes = useStyles();
 
     const [isModaOpen, setIsModalOpen] = useState(false);
@@ -67,7 +70,17 @@ const Post = ({
     useEffect(() => {
         onFetchPostById(id);
         onFetchComments(id);
+
+        return () => {
+            onFetchPostById(0);
+            onFetchComments(0);
+        }
     }, []);
+
+    const handleDeletePost = async () => {
+        await onDeletePost(post.id);
+        history.push(routes.home)
+    }
 
     return (
         <div>
@@ -94,7 +107,7 @@ const Post = ({
                     </button>
                         <button
                             className='button button-delete'
-                            onClick={() => onDeletePost(post.id)}
+                            onClick={() => handleDeletePost()}
                         >
                             Delete post
                     </button>

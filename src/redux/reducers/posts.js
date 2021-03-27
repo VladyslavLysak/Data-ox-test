@@ -3,6 +3,8 @@ import {
     CREATE_POST_SUCCESS,
     GET_POSTS_FAILURE,
     CREATE_POST_FAILURE,
+    DELETE_POST_SUCCESS,
+    CHANGE_POST_SUCCESS,
     SEARCH_POST
 } from '../actions/posts/types';
 
@@ -13,6 +15,8 @@ const initialState = {
 };
 
 export default (state = initialState, { type, payload }) => {
+    const prevPosts = [...state.items];
+    const activeIndex = prevPosts.findIndex(post => post.id === payload?.id);
     switch (type) {
         case GET_POSTS_SUCCESS:
             return {
@@ -38,6 +42,21 @@ export default (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 error: payload
+            }
+        case DELETE_POST_SUCCESS:
+            prevPosts.splice(activeIndex, 1);
+            return {
+                ...state,
+                items: prevPosts,
+                error: false
+            }
+        case CHANGE_POST_SUCCESS:
+            prevPosts[activeIndex] = {...payload};
+            console.log(payload);
+            return {
+                ...state,
+                items: prevPosts,
+                error: false
             }
         default:
             return state;
