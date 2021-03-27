@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-function App() {
+import './App.scss';
+
+import { routes } from './helpers/routesConst';
+import ScrollToTop from './helpers/scrollToTop';
+
+import Loading from './components/helpers/Loading';
+import MainWrapper from './components/wrappers/main';
+import BackWrapper from './components/wrappers/back';
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Suspense fallback={<Loading />}>
+        <ScrollToTop>
+          <BackWrapper />
+          <MainWrapper>
+            <Switch>
+              <Route path={routes.home} exact component={lazy(() => import('./containers/Home'))} />
+              <Route path={`${routes.post}/:id`} exact component={lazy(() => import('./containers/Post'))} />
+              <Route component={lazy(() => import('./containers/Error'))} />
+            </Switch>
+          </MainWrapper>
+        </ScrollToTop>
+      </Suspense>
+    </Router>
   );
 }
 
